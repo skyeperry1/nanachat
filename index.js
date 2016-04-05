@@ -7,10 +7,11 @@ var io = require('socket.io')(server);
 
 var totalUsers = 0;
 
+/*
 app.get('/', function (request, response) {
   response.sendFile(__dirname + '/public/index.html');
 });
-
+*/
 io.on('connection', function(user){
   
   console.log('a user connected');
