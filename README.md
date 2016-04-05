@@ -1,2 +1,2 @@
 # nanachat
-Bannana Chat - A simple websocket chatroom
+Banana Chat - A simple websocket chatroom
