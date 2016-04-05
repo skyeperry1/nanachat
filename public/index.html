@@ -13,30 +13,26 @@
   <!--Angular-->
   <script src="app.js"></script>
 
-    <title>Skye's Chat</title>
-   
+  <title>Banana Chat</title>   
   </head>
+
   <body ng-app="app" ng-controller="mainCtrl">
+
     <ul id="messages"></ul>
+
     <form action="">
+
       <div class="option">
+
         <h3>Handle:</h3><input ng-model="myHandle"/>
+
       </div>
 
-      <input id="m" autocomplete="off" ng-change="nowTyping()" ng-model="myMessage"/><button>Chat</button>
+      <input id="m" autocomplete="off" ng-change="nowTyping()" ng-model="myMessage"/>
+      
+      <button>Chat</button>
+    
     </form>
-
-    <script>
-    /*
-  var socket = io();
- $('form').submit(function(){
-    socket.emit('chat message', $('#m').val());
-    $('#m').val('');
-    return false;
-  });
-  socket.on('chat message', function(msg){
-    $('#messages').append($('<li>').text(msg));
-  });*/
-</script>
+    
   </body>
 </html>
