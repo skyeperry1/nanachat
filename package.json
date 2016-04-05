@@ -10,8 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/skyeperry1/nanachat.git"
   },
+  "engines": {
+    "node": "0.12.7"
+  },
   "author": "Skye Perry",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/skyeperry1/nanachat/issues"
   },
