@@ -1,0 +1,24 @@
+{
+  "name": "nanachat",
+  "version": "1.0.0",
+  "description": "Bannana Chat - A simple websocket chatroom",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skyeperry1/nanachat.git"
+  },
+  "author": "Skye Perry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skyeperry1/nanachat/issues"
+  },
+  "homepage": "https://github.com/skyeperry1/nanachat#readme",
+  "dependencies": {
+    "angular-ui-notification": "^0.1.0",
+    "express": "^4.13.4",
+    "socket.io": "^1.4.5"
+  }
+}
