@@ -71,11 +71,13 @@ app.controller('mainCtrl', function ($scope, Notification) {
        handleClass = "someoneElse";
      }
 
+     var incomingMessage = msg.msg.toString();
+
      var prettyMessage = "<span class='handle " + 
      handleClass + "'>" + 
      msg.hnd + 
      ": </span>" + 
-     msg.msg.toString();
+     incomingMessage.replace(/(<([^>]+)>)/ig,"");
 
 
      $('#messages').append($('<li>').html( prettyMessage ));
