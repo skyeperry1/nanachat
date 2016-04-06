@@ -1,11 +1,17 @@
 <!doctype html>
 <html>
-  <head>
+
+<head>
+
+  <!--Resources-->
   <script src="js/socket.io-client/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
   <script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
   <script src="js/angular-ui-notification.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <!--Fonts-->
+  <link href='https://fonts.googleapis.com/css?family=Megrim' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
   
   <!--CSS-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -16,42 +22,74 @@
   <script src="app.js"></script>
 
   <title>Banana Chat</title>   
-  </head>
+</head>
 
-  <body ng-app="app" ng-controller="mainCtrl">
+<body ng-app="app" ng-controller="mainCtrl" class="container">
 
-  <h1>Modal example</h1>
-  <button ng-click="toggleModal()" class="btn btn-default">Open modal</button>
+<!--Header-->
+<nav id="myNavbar" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                 <a href="/"><img src="/images/warhol_banana.png" alt="banana" /></a>
+                <a class="navbar-brand" id="logo"href="/">Banana Chat</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="nav navbar-nav" id="navLabels">
+                    <li ng-click="toggleModal()"><a href="">Options</a></li>                    
+                    <li><a href="/about" target="_blank">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<!--Message Jumbotron-->
+   <div class="special">
+    <div class="jumbotron">
+        <div class="container-fluid">
+            <ul id="messages"></ul>
+        </div>
+    </div>
     
+
+ 
+<!--Input(Footer)-->
+<div class="col-xs-12 noPadding">
+     <footer class="footer">
+        <div class="col-xs-12">
+          <form action="" role="form" id="messageInput">
+            <div class="input-group" id="chatInput">
+                <input class="form-control" rows="1" id="m" type="text" autocomplete="off" ng-change="nowTyping()" ng-model="myMessage"/>       
+                 <span class="input-group-btn"> 
+                 <button class="btn btn-default" id="chatBtn" type="submit">Submit</button>
+                </span>
+             </div>
+          </form>
+        </div>
+    </footer>
+  </div>
+</div><!--End Special-->
+
+<!--Modal Popup-->
   <modal title="Login form" visible="showModal">
-    <form role="form">
+    <form role="form">      
       <div class="form-group">
-        <label for="email">Email address</label>
-        <input type="email" class="form-control" id="email" placeholder="Enter email" />
+        <label for="myhandle">UserName</label>
+        <input id="myhandle" type="text"  ng-model="tempHandle" placeholder="myHandle" />
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Password" />
-      </div>
-      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="submit" ng-click="updateHandle(tempHandle)" class="btn btn-default">Save Options</button>
     </form>
   </modal>
 
-    <ul id="messages"></ul>
+ 
 
-    <form action="">
-
-      <div class="option">
-
-        <h3>Handle:</h3><input ng-model="myHandle"/>
-
-      </div>
-
-      <input id="m" autocomplete="off" ng-change="nowTyping()" ng-model="myMessage"/>
-      
-      <button>Chat</button>
-    
-    </form>
-    
-  </body>
+</body>
 </html>
+<!--End-->

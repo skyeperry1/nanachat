@@ -1,9 +1,9 @@
 
 var app = angular.module('app', ['ui-notification']);
 
-app.controller('mainCtrl', function ($scope, Notification) {
+app.controller('mainCtrl', [ '$scope', 'Notification', '$timeout' ,function ($scope, Notification, $timeout) {
 	
-	$scope.myHandle = "butters";
+	$scope.myHandle = "Butters Stotch";
 	$scope.myMessage = "";
 	$scope.SentTypingNotification = false;
 
@@ -38,9 +38,9 @@ app.controller('mainCtrl', function ($scope, Notification) {
     //Send a message
     var socket = io();
     $('form').submit(function(){
-      socket.emit('chat message', {msg: $('#m').val(), hnd: $scope.myHandle});
-      $('#m').val('');
-      $scope.SentTypingNotification = false;
+      socket.emit('chat message', {msg: $('#m').val(), hnd: $scope.myHandle}); //send the message and handle as an object to the server
+      $('#m').val(''); //empty the input
+      $scope.SentTypingNotification = false; //reset the typing notification flag
       return false;
     });
 
@@ -84,21 +84,30 @@ app.controller('mainCtrl', function ($scope, Notification) {
 
      $('#messages').append($('<li>').html( prettyMessage ));
    });
+
     //modal popup directive
-    $scope.showModal = false;
+    $scope.showModal = false; //Show the modal when page loads
     $scope.toggleModal = function(){
         $scope.showModal = !$scope.showModal;
     };
-  });
 
-app.directive('modal', function () {
+    $scope.tempHandle = "Butters Stotch";
+
+    $scope.updateHandle = function(newHandle){
+    $scope.myHandle = newHandle;
+    $scope.showModal = !$scope.showModal;
+  };
+
+}]);
+
+app.directive('modal', [ '$timeout' , function ($timeout) {
     return {
       template: '<div class="modal fade">' + 
           '<div class="modal-dialog">' + 
             '<div class="modal-content">' + 
               '<div class="modal-header">' + 
                 '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
-                '<h4 class="modal-title">fuck</h4>' + 
+                '<h4 class="modal-title">Options</h4>' + 
               '</div>' + 
               '<div class="modal-body" ng-transclude></div>' + 
             '</div>' + 
@@ -112,10 +121,20 @@ app.directive('modal', function () {
         scope.title = attrs.title;
 
         scope.$watch(attrs.visible, function(value){
-          if(value == true)
-            $(element).modal('show');
-          else
+         
+
+            $timeout(function() {
+            // We must reevaluate the value in case it was changed by a subsequent
+            // watch handler in the digest.
+           if(value == true) {
+              $(element).modal('show');
+            } else
             $(element).modal('hide');
+
+          }, 0, false);
+        
+           
+          
         });
 
         $(element).on('shown.bs.modal', function(){
@@ -131,9 +150,4 @@ app.directive('modal', function () {
         });
       }
     };
-
-
-
-
-
-  });
+}]);
