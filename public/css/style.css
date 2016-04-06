@@ -89,7 +89,6 @@ body {
   /* Set the fixed height of the footer here */
   height: 60px; 
   background-color: black;
-  border-radius: 5px 5px 0px 0px;
   border-bottom: none;
 }
 .about img{width:200px;}
