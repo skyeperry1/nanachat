@@ -1,153 +1,131 @@
 
-var app = angular.module('app', ['ui-notification']);
+var app = angular.module('app', ['ui-notification','modal']);
 
 app.controller('mainCtrl', [ '$scope', 'Notification', '$timeout' ,function ($scope, Notification, $timeout) {
-	
-	$scope.myHandle = "Butters Stotch";
+  //*********************************
+  //User Variables
+  //*********************************
+  $scope.tempHandle = "Butters Stotch"; //Temporary handle for the options popup
+	$scope.myHandle = "Butters Stotch"; //User handle
 	$scope.myMessage = "";
-	$scope.SentTypingNotification = false;
+	$scope.SentTypingNotification = false; //typing notification bool flag
 
+  //*********************************
+  //Typing Notification
+  //*********************************
 	$scope.nowTyping = function(){
 		if(!$scope.SentTypingNotification){
-			socket.emit('typing', $scope.myHandle);
-			$scope.SentTypingNotification = true;
-		}
-		
+			socket.emit('typing', $scope.myHandle);  //send a notification to the server that user is typing
+			$scope.SentTypingNotification = true;    //change the typing notification bool flag so we don't keep emiting
+		}		
 	}
 
-	//Get the Date
- $scope.date = new Date();
- $scope.time = new Date().getTime();
-  	//notification stuff
-  	$scope.newMessageNotification = function(message, userName) {
-      Notification('<strong>New Message From:<strong>' + userName + '<br>' + message);
-    };
-
-    $scope.typingeNotification = function(userName) {
-      Notification('<strong>' + userName + ' is typing...<strong>');
-    };
-
-    $scope.userLeftNotification = function(totalUsers){
-      Notification.error({message: "<strong>Someone Left, You Loser!</strong><br/> Total in Room: " + totalUsers, delay:10000});
-    }
-
-    $scope.newUserNofication = function(totalUsers) {
-      Notification.success({message: "<strong>New User Joined!</strong><br/> Total in Room: " + totalUsers, delay:10000});
-    };
-
-    //Send a message
-    var socket = io();
-    $('form').submit(function(){
-      socket.emit('chat message', {msg: $('#m').val(), hnd: $scope.myHandle}); //send the message and handle as an object to the server
-      $('#m').val(''); //empty the input
-      $scope.SentTypingNotification = false; //reset the typing notification flag
-      return false;
-    });
-
- 	//Alert a new user
-   socket.on('newUser', function(totalUsers){
-    $scope.newUserNofication(totalUsers);
-  });
-
-   //alert when somone leaves
-   socket.on('userLeft', function(totalUsers){
-    $scope.userLeftNotification(totalUsers);
-  });
-
-   //alert when somone is typing;
+  //Listen for 'typing' alert from the server and
+  //call the typing notification function for the client when we get an alert
    socket.on('typing', function(typerHandle){
     if(typerHandle != $scope.myHandle){
       $scope.typingeNotification(typerHandle);
     }
   });
 
+  //Configure typing notification message
+  $scope.typingeNotification = function(userName) {
+      Notification('<strong>' + userName + ' is typing...<strong>');
+  };  
 
-  	//Add messages to DOM
-    socket.on('chat message', function(msg){
+  //*********************************
+  //New User Notification
+  //*********************************
+  
+  //Listen to 'newUser' alert from the server and
+  //call the newUser notification function for the client when we get an alert
+  socket.on('newUser', function(totalUsers){
+    $scope.newUserNofication(totalUsers);
+  });
+
+  //Configure new user notification message
+  $scope.newUserNofication = function(totalUsers) {
+      Notification.success({message: "<strong>New User Joined!</strong><br/> Total in Room: " + totalUsers, delay:10000});
+  };
+
+  //*********************************
+  //User leaving Notification
+  //*********************************
+  
+  //Listen to 'userLeft' alert from the server and
+  //call the UserLeft notification function for the client when we get an alert
+  socket.on('userLeft', function(totalUsers){
+    $scope.userLeftNotification(totalUsers);
+  });
+
+  //Configure  user leaving notification message
+  $scope.userLeftNotification = function(totalUsers){
+    Notification.error({message: "<strong>Someone Left, You Loser!</strong><br/> Total in Room: " + totalUsers, delay:10000});
+  }
+
+  //*********************************
+  //Options Popup Window
+  //*********************************
+  $scope.showModal = false; //Show the modal when page loads
+
+  //Toggle the option popup window
+  $scope.toggleModal = function(){
+      $scope.showModal = !$scope.showModal;
+  };  
+
+  //Update the user handle and hide the popup window
+  $scope.updateHandle = function(newHandle){
+    $scope.myHandle = newHandle.replace(/(<([^>]+)>)/ig,"");  //update handle and sanatize new name
+    $scope.showModal = !$scope.showModal; //hide popup window
+  };
+
+  //*********************************
+	//Recieving Messages
+  //*********************************
+
+  //configure new message notification	
+  $scope.newMessageNotification = function(message, userName) {
+    Notification('<strong>New Message From:<strong>' + userName + '<br>' + message);
+  };
+
+  //listen for new messages. sanatize message and print to DOM
+  socket.on('chat message', function(msg){
       var handleClass;
+      var incomingMessage;
 
       if(msg.hnd === $scope.myHandle){
-       handleClass = "me";
+       handleClass = "me"; //add 'me' class to handle
      }else{
-       $scope.newMessageNotification(msg.msg, msg.hnd);	
-       handleClass = "someoneElse";
+       $scope.newMessageNotification(msg.msg, msg.hnd); 
+       handleClass = "someoneElse"; //add 'someoneElse' class to handle
      }
 
-     var incomingMessage = msg.msg.toString();
+     incomingMessage = msg.msg.toString(); //convert out incoming message into a string
+     incomingMessage = incomingMessage.replace(/(<([^>]+)>)/ig,""); //sanatize the message
 
+     //make a nice pretty string of html to print
      var prettyMessage = "<span class='handle " + 
      handleClass + "'>" + 
      msg.hnd + 
      ": </span>" + 
-     incomingMessage.replace(/(<([^>]+)>)/ig,"");
+     incomingMessage; 
 
-
+     //add the new message to the DOM
      $('#messages').append($('<li>').html( prettyMessage ));
    });
 
-    //modal popup directive
-    $scope.showModal = false; //Show the modal when page loads
-    $scope.toggleModal = function(){
-        $scope.showModal = !$scope.showModal;
-    };
+  //*********************************
+  //Sending Messages
+  //*********************************    
 
-    $scope.tempHandle = "Butters Stotch";
+  //Send a message on for submit or enter press
+  var socket = io();
+  $('form').submit(function(){
+    socket.emit('chat message', {msg: $('#m').val(), hnd: $scope.myHandle}); //send the message and handle as an object to the server
+    $('#m').val(''); //empty the input
+    $scope.SentTypingNotification = false; //reset the typing notification flag
+    return false;
+  });
 
-    $scope.updateHandle = function(newHandle){
-    $scope.myHandle = newHandle;
-    $scope.showModal = !$scope.showModal;
-  };
+}]);//END mainCtrl
 
-}]);
-
-app.directive('modal', [ '$timeout' , function ($timeout) {
-    return {
-      template: '<div class="modal fade">' + 
-          '<div class="modal-dialog">' + 
-            '<div class="modal-content">' + 
-              '<div class="modal-header">' + 
-                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
-                '<h4 class="modal-title">Options</h4>' + 
-              '</div>' + 
-              '<div class="modal-body" ng-transclude></div>' + 
-            '</div>' + 
-          '</div>' + 
-        '</div>',
-      restrict: 'E',
-      transclude: true,
-      replace:true,
-      scope:true,
-      link: function postLink(scope, element, attrs) {
-        scope.title = attrs.title;
-
-        scope.$watch(attrs.visible, function(value){
-         
-
-            $timeout(function() {
-            // We must reevaluate the value in case it was changed by a subsequent
-            // watch handler in the digest.
-           if(value == true) {
-              $(element).modal('show');
-            } else
-            $(element).modal('hide');
-
-          }, 0, false);
-        
-           
-          
-        });
-
-        $(element).on('shown.bs.modal', function(){
-          scope.$apply(function(){
-            scope.$parent[attrs.visible] = true;
-          });
-        });
-
-        $(element).on('hidden.bs.modal', function(){
-          scope.$apply(function(){
-            scope.$parent[attrs.visible] = false;
-          });
-        });
-      }
-    };
-}]);
