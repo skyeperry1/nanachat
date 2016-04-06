@@ -114,7 +114,13 @@ app.controller('mainCtrl', [ '$scope', 'Notification', '$timeout' ,function ($sc
 
      //add the new message to the DOM
      $('#messages').append($('<li>').html( prettyMessage ));
-   });
+     //scroll to the bottom of the chat
+      $.smoothScroll({
+      scrollElement: $('.jumbotron'),
+      scrollTarget: '#endOfChat'
+    }); 
+
+  });//End message listner
 
   //*********************************
   //Sending Messages
@@ -129,4 +135,3 @@ app.controller('mainCtrl', [ '$scope', 'Notification', '$timeout' ,function ($sc
   });
 
 }]);//END mainCtrl
-

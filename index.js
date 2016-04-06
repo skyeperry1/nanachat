@@ -26,7 +26,6 @@ io.on('connection', function(user){
     io.emit('chat message', {msg: msg.msg, hnd: msg.hnd});
   });
 
-
   user.on('disconnect', function(){
     console.log('user disconnected');
     totalUsers--;
