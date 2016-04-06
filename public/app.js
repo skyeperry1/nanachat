@@ -10,6 +10,8 @@ app.controller('mainCtrl', [ '$scope', 'Notification', '$timeout' ,function ($sc
 	$scope.myMessage = "";
 	$scope.SentTypingNotification = false; //typing notification bool flag
 
+  var socket = io();
+
   //*********************************
   //Typing Notification
   //*********************************
@@ -118,8 +120,7 @@ app.controller('mainCtrl', [ '$scope', 'Notification', '$timeout' ,function ($sc
   //Sending Messages
   //*********************************    
 
-  //Send a message on for submit or enter press
-  var socket = io();
+  //Send a message on for submit or enter press  
   $('form').submit(function(){
     socket.emit('chat message', {msg: $('#m').val(), hnd: $scope.myHandle}); //send the message and handle as an object to the server
     $('#m').val(''); //empty the input
