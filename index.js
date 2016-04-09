@@ -23,17 +23,13 @@ mongoose.connect(uristring, function (err, res) {
 });
 
 var userSchema = new mongoose.Schema({
-  user: {
+  name: {
     first: String,
     last: { type: String, trim: true }
   },
   age: { type: Number, min: 0 }
 });
-/*
-var userSchema = new mongoose.Schema({
-  user: String,
-  msg:String
-});*/
+
 
 var PUser = mongoose.model('PowerUsers', userSchema);
 
@@ -55,25 +51,14 @@ app.get('/about', function (request, response) {
 });
 
 io.on('connection', function(user){
-
     PUser.find({}).exec(function(err, result) {
-      if (!err) {
-        // handle result
-        var name = result.name;
-        var leftOvers = JSON.stringify(result, undefined, 2);
-        
-
+      if (!err) {        
         for (var i = 0, l = result.length; i < l; i++) {
           var obj = result[i];
-          var name= result[i].age;
-          io.emit('chat message', {msg: name, hnd: ''});   // ...
-    // ...
-        }   
-            
-        
-
-        
-
+          var name= result[i].name.first;
+          var age= result[i].age;
+          io.emit('chat message', {msg: name, hnd: age});  
+          }    
       } else {
         // error handling
       };
