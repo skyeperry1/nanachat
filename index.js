@@ -52,14 +52,7 @@ app.get('/about', function (request, response) {
 
 io.on('connection', function(user){
 
-    PUser.find({}).exec(function(err, result) {
-      if (!err) {
-        // handle result
-        io.emit('chat message', {msg: result, hnd: msg.hnd});
-      } else {
-        // error handling
-      };
-    });
+   
 
   console.log('a user connected');
   totalUsers++;
