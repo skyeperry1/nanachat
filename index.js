@@ -23,21 +23,25 @@ mongoose.connect(uristring, function (err, res) {
 });
 
 var userSchema = new mongoose.Schema({
-  name: {
+  user: {
     first: String,
     last: { type: String, trim: true }
   },
   age: { type: Number, min: 0 }
 });
+/*
+var userSchema = new mongoose.Schema({
+  user: String,
+  msg:String
+});*/
 
 var PUser = mongoose.model('PowerUsers', userSchema);
-...
+
 // Creating one user.
 var johndoe = new PUser ({
   name: { first: 'John', last: '  Doe   ' },
   age: 25
 });
-
 // Saving it to the database.
 johndoe.save(function (err) {if (err) console.log ('Error on save!')});
 
@@ -52,7 +56,28 @@ app.get('/about', function (request, response) {
 
 io.on('connection', function(user){
 
-   
+    PUser.find({}).exec(function(err, result) {
+      if (!err) {
+        // handle result
+        var name = result.name;
+        var leftOvers = JSON.stringify(result, undefined, 2);
+        
+
+        for (var i = 0, l = result.length; i < l; i++) {
+          var obj = result[i];
+          var name= result[i].age;
+          io.emit('chat message', {msg: name, hnd: ''});   // ...
+    // ...
+        }   
+            
+        
+
+        
+
+      } else {
+        // error handling
+      };
+    });
 
   console.log('a user connected');
   totalUsers++;
