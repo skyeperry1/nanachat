@@ -1,10 +1,49 @@
 var express = require('express');
+var mongoose = require ("mongoose");
 var app = express();
 var server = require('http').createServer(app);
 app.use(express.static(__dirname + '/public'));
 
 var io = require('socket.io')(server);
 
+//**************************************************
+//DB stuff
+//**************************************************
+var uristring =
+    process.env.MONGOLAB_URI ||
+    process.env.MONGOHQ_URL ||
+    'mongodb://localhost/HelloMongoose';
+
+mongoose.connect(uristring, function (err, res) {
+  if (err) {
+  console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+  } else {
+  console.log ('Succeeded connected to: ' + uristring);
+  }
+});
+
+var userSchema = new mongoose.Schema({
+  name: {
+    first: String,
+    last: { type: String, trim: true }
+  },
+  age: { type: Number, min: 0 }
+});
+
+var PUser = mongoose.model('PowerUsers', userSchema);
+...
+// Creating one user.
+var johndoe = new PUser ({
+  name: { first: 'John', last: '  Doe   ' },
+  age: 25
+});
+
+// Saving it to the database.
+johndoe.save(function (err) {if (err) console.log ('Error on save!')});
+
+//**************************************************
+//Chat stuff
+//**************************************************
 var totalUsers = 0;
 
 app.get('/about', function (request, response) {
@@ -12,6 +51,15 @@ app.get('/about', function (request, response) {
 });
 
 io.on('connection', function(user){
+
+    PUser.find({}).exec(function(err, result) {
+      if (!err) {
+        // handle result
+        io.emit('chat message', {msg: result, hnd: msg.hnd});
+      } else {
+        // error handling
+      };
+    });
 
   console.log('a user connected');
   totalUsers++;
