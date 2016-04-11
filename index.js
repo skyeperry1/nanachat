@@ -9,6 +9,7 @@ var io = require('socket.io')(server);
 //**************************************************
 //DB stuff
 //**************************************************
+/*
 var uristring =
     process.env.MONGOLAB_URI ||
     process.env.MONGOHQ_URL ||
@@ -40,7 +41,7 @@ var johndoe = new PUser ({
 });
 // Saving it to the database.
 johndoe.save(function (err) {if (err) console.log ('Error on save!')});
-
+*/
 //**************************************************
 //Chat stuff
 //**************************************************
@@ -51,6 +52,8 @@ app.get('/about', function (request, response) {
 });
 
 io.on('connection', function(user){
+  /*
+  //Return Db results and emit as a message
     PUser.find({}).exec(function(err, result) {
       if (!err) {        
         for (var i = 0, l = result.length; i < l; i++) {
@@ -62,7 +65,7 @@ io.on('connection', function(user){
       } else {
         // error handling
       };
-    });
+    });/*
 
   console.log('a user connected');
   totalUsers++;
