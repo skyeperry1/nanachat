@@ -65,7 +65,7 @@ io.on('connection', function(user){
       } else {
         // error handling
       };
-    });/*
+    });*/
 
   console.log('a user connected');
   totalUsers++;
